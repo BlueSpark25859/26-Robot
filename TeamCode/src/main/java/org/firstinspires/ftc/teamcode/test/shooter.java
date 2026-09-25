@@ -1,32 +1,34 @@
 package org.firstinspires.ftc.teamcode.test;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+@TeleOp (name = "shooter")
 public class shooter extends LinearOpMode {
     public void runOpMode() {
-        DcMotor ShooterR = hardwareMap.get(DcMotor.class, "shooterR");
-        DcMotor ShooterL = hardwareMap.get(DcMotor.class, "shooterL");
+        DcMotorEx ShooterR = hardwareMap.get(DcMotorEx.class, "shooterR");
 
-        ShooterR.setDirection(DcMotorSimple.Direction.REVERSE);
-        ShooterL.setDirection(DcMotorSimple.Direction.FORWARD);
+        ShooterR.setDirection(DcMotorSimple.Direction.FORWARD);
 
-        double powerS;
+        ShooterR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        double velocityS;
 
         waitForStart();
 
         while (opModeIsActive()) {
             if (gamepad1.right_bumper) {
-                powerS = 0.8;
+                velocityS = 2000;
             } else {
-                powerS = 0;
+                velocityS = 0;
             }
 
-            ShooterR.setPower(powerS);
-            ShooterL.setPower(powerS);
+            ShooterR.setVelocity(velocityS);
 
-            telemetry.addData("VelocidadShooter", powerS);
+            telemetry.addData("VelocidadShooter", ShooterR.getVelocity());
             telemetry.update();
 
         }
