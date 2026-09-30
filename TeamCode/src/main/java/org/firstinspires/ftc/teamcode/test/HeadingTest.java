@@ -3,12 +3,13 @@ package org.firstinspires.ftc.teamcode.test;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 
-@Autonomous(name = "autopractice")
-public class autopractice extends LinearOpMode {
+@TeleOp(name = "HeadingTest")
+public class HeadingTest extends LinearOpMode {
     DcMotorEx JMotor;
     IMU imu;
 
@@ -26,25 +27,28 @@ public class autopractice extends LinearOpMode {
         imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP,
                 RevHubOrientationOnRobot.UsbFacingDirection.RIGHT)));
 
+        imu.resetYaw();
+
+        int degrees = 270;
+
         waitForStart();
 
-        while(opModeIsActive()){
-            moveMotor(0.2);
-            sleep(2000);
-            moveMotor2(0.2);
-            sleep(2000);
-            moveMotor(0);
+        while (opModeIsActive()) {
+            JMotor.setTargetPosition(degrees);
+            JMotor.setTargetPositionTolerance(10);
+            JMotor.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            JMotor.setPower(0.2);
 
-            break;
+            if (gamepad1.a){
+                degrees = 100;
+            }
+            else{
+                degrees = 270;
+            }
+
+            if (gamepad1.b){
+                degrees = 200;
+            }
         }
-
-
-    }
-
-    public void moveMotor (double power){
-        JMotor.setPower(power);
-    }
-    public void moveMotor2 (double power){
-        JMotor.setPower(-power);
     }
 }
