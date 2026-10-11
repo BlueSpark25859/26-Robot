@@ -52,7 +52,7 @@ public class BioBuzzMecanum extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()){
-            //DRIVER CODE
+            //---DRIVER CODE---
             double drive =  -gamepad1.left_stick_y;
             double strafe = gamepad1.left_stick_x;
             double turn = gamepad1.right_trigger - gamepad1.left_trigger;
@@ -74,7 +74,7 @@ public class BioBuzzMecanum extends LinearOpMode {
 
 
 
-            //OPERATOR CODE
+            //---OPERATOR CODE---
             if (gamepad2.a){
                 intake.setPower(0.8);
             } else {
@@ -82,7 +82,7 @@ public class BioBuzzMecanum extends LinearOpMode {
             }
 
             if (gamepad2.b){
-                shooter.setVelocity(3000);
+                shooter.setVelocity(1400);
             } else {
                 shooter.setVelocity(0);
             }
@@ -97,9 +97,6 @@ public class BioBuzzMecanum extends LinearOpMode {
             telemetry.addData("shooter velocity: ", shooter.getVelocity());
             telemetry.addData("intake power", intake.getPower());
 
-            for (int i = 0; i<5; i++){
-                telemetry.addLine("Verity");
-            }
 
             telemetry.update();
         }

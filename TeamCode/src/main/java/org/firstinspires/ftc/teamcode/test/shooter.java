@@ -21,12 +21,16 @@ public class shooter extends LinearOpMode {
 
         while (opModeIsActive()) {
             if (gamepad1.right_bumper) {
-                velocityS = 2000;
+                velocityS = 1400;
             } else {
                 velocityS = 0;
             }
 
-            ShooterR.setVelocity(velocityS);
+            if (gamepad1.left_bumper) {
+                velocityS = 1700;
+            }
+
+            ShooterR.setVelocity(-velocityS);
 
             telemetry.addData("VelocidadShooter", ShooterR.getVelocity());
             telemetry.update();
