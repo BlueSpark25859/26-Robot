@@ -12,12 +12,16 @@ public class PIDF_test extends LinearOpMode {
 
     public DcMotorEx ShooterR;
 
-    double highVelocity = 1400;
-    double lowVelocity = 800;
-    double currentTargetVelocity = highVelocity;
+    //---------------------------
+    //COEFICIENTS
+    // F = 14.49
+    // P = 0.93
 
     //Values
-    double F, P = 0;
+    double F = 5;
+    double P = 0;
+
+    double currentTargetVelocity = 0;
 
     double[] incremental = {10.0, 1.0, 0.1, 0.01}; //Available sizes in which P,F is incremented
 
@@ -26,15 +30,15 @@ public class PIDF_test extends LinearOpMode {
     public void runOpMode() {
         ShooterR = hardwareMap.get(DcMotorEx.class, "shooterR");
 
-        ShooterR.setDirection(DcMotorSimple.Direction.FORWARD);
+        ShooterR.setDirection(DcMotorSimple.Direction.REVERSE);
         ShooterR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P,0,0,F);
+//        double highVelocity = 1600;
+//        double lowVelocity = 800;
 
-        ShooterR.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
+        //ShooterR.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
-        double currentVelocity = ShooterR.getVelocity();
-        double error = currentTargetVelocity - currentVelocity;
+
 
         telemetry.addLine("Configuración Completa. Presiona PLAY para empezar");
         telemetry.update();
@@ -43,9 +47,27 @@ public class PIDF_test extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+
+
+            PIDFCoefficients pidfCoefficients = new PIDFCoefficients(P,0,0,F);
+            /*
             if (gamepad1.triangleWasPressed()){
                 if (currentTargetVelocity == highVelocity) { currentTargetVelocity = lowVelocity;}
             } else { currentTargetVelocity = highVelocity;}
+
+            */
+
+            if(gamepad1.cross){
+                currentTargetVelocity = 800;
+                telemetry.addLine("Changed velocity");
+            }
+
+            if(gamepad1.right_bumper){
+                currentTargetVelocity = 1600;
+                telemetry.addLine("Changed velocity");
+            }
+
+
 
             if (gamepad1.circleWasPressed()){
                 incrementIndex = (incrementIndex + 1) % incremental.length; //If reach end then go to beginning
@@ -59,6 +81,12 @@ public class PIDF_test extends LinearOpMode {
             if (gamepad1.dpadDownWasPressed()) {P -= incremental[incrementIndex];}
             if (gamepad1.dpadUpWasPressed()) {P += incremental[incrementIndex];}
 
+            if(gamepad1.left_trigger_pressed){
+                ShooterR.setVelocity(currentTargetVelocity);
+            }
+
+            double currentVelocity = ShooterR.getVelocity();
+            double error = currentTargetVelocity - currentVelocity;
 
             ShooterR.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, pidfCoefficients);
 
@@ -68,9 +96,10 @@ public class PIDF_test extends LinearOpMode {
             telemetry.addData("Current Velocity: ", currentVelocity);
             telemetry.addData("Error: ", error);
             telemetry.addLine("--- TUNING CONFIGURATION ---");
+            telemetry.addData("PIDF COEFICIENTS", ShooterR.getPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER));
             telemetry.addData("Tuning F: ", F);
             telemetry.addData("Tuning P: ", P);
-            telemetry.addData("Incremental Size: ", incremental);
+            telemetry.addData("Incremental Size: ", incrementIndex);
             telemetry.update();
 
         }

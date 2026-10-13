@@ -10,7 +10,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
-import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase;
 import org.firstinspires.ftc.vision.apriltag.AprilTagLibrary;
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor;
 
@@ -20,7 +19,7 @@ import java.util.List;
 public class AprilTagWebcam {
     private AprilTagProcessor aprilTagProcessor;
     AprilTagLibrary tags = new AprilTagLibrary.Builder()
-            .addTag(38, "BLUE AUDIENCE", 0.0825, DistanceUnit.METER)
+            .addTag(38, "BLUE AUDIENCE", 0.073, DistanceUnit.METER)
             .build();
     private VisionPortal visionPortal;
 
@@ -38,6 +37,7 @@ public class AprilTagWebcam {
                 .setDrawCubeProjection(true)
                 .setOutputUnits(DistanceUnit.CM, AngleUnit.DEGREES)
                 .setTagLibrary(tags)
+                //.setTagLibrary(AprilTagGameDatabase.)
                 .build();
 
         VisionPortal.Builder builder = new VisionPortal.Builder();

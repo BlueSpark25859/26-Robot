@@ -17,8 +17,8 @@ public class AprilTagVision extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()){
             aprilTagWebcam.update();
-            AprilTagDetection id20 = aprilTagWebcam.getTagBySpecificID(20);
-            aprilTagWebcam.displayDetectionTelemetry(id20);
+            AprilTagDetection id38 = aprilTagWebcam.getTagBySpecificID(38);
+            aprilTagWebcam.displayDetectionTelemetry(id38);
         }
     }
 }
