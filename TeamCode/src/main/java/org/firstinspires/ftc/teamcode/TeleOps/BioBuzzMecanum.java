@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -21,10 +22,16 @@ public class BioBuzzMecanum extends LinearOpMode {
         telemetry.addData("Status", "Started");
         telemetry.update();
 
+        Servo servoOne;
+        servoOne = hardwareMap.get(Servo.class,"servo_one");
+
         DcMotorEx leftBack = hardwareMap.get(DcMotorEx.class, "leftBack");
         DcMotorEx leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         DcMotorEx rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
         DcMotorEx rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
+
+        servoOne.scaleRange(0.2,0.8);
+
 
         IMU = hardwareMap.get(IMU.class, "imu");
         leftFront.setDirection(DcMotorEx.Direction.REVERSE);
@@ -52,7 +59,7 @@ public class BioBuzzMecanum extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()){
-            //---DRIVER CODE---
+            //DRIVER CODE
             double drive =  -gamepad1.left_stick_y;
             double strafe = gamepad1.left_stick_x;
             double turn = gamepad1.right_trigger - gamepad1.left_trigger;
@@ -74,7 +81,7 @@ public class BioBuzzMecanum extends LinearOpMode {
 
 
 
-            //---OPERATOR CODE---
+            //OPERATOR CODE
             if (gamepad2.a){
                 intake.setPower(0.8);
             } else {
@@ -82,10 +89,36 @@ public class BioBuzzMecanum extends LinearOpMode {
             }
 
             if (gamepad2.b){
-                shooter.setVelocity(1400);
+                shooter.setVelocity(3000);
             } else {
                 shooter.setVelocity(0);
             }
+
+            servoOne.setPosition(0.5); //value from 0 to 1
+            //servoTwo.setPower(0.5); //send power to the continous servo
+
+            //Controlling servo with gamepad
+            if(gamepad2.cross){
+                servoOne.setPosition(1);
+            }else if(gamepad2.square){
+                servoOne.setPosition(0);
+            }
+
+            //Controlling servo with trigger
+            boolean isPressed = gamepad2.right_trigger > 0.5;
+            if(isPressed) {
+                servoOne.setPosition(0.55);
+            }
+
+            //Testing the servo smoothly with dpad
+            if(gamepad2.dpadUpWasPressed()){
+                servoOne.setPosition(servoOne.getPosition() + 1);
+            }else if(gamepad2.dpadDownWasPressed()){
+                servoOne.setPosition(servoOne.getPosition() - 1);
+            }
+
+            //Telemetry to see the position of our servo
+            telemetry.addData("Servo Position: ",servoOne.getPosition());
 
             telemetry.addLine("DRIVER TELEMETRY");
             telemetry.addData("leftFront", leftFront.getPower());
@@ -96,7 +129,6 @@ public class BioBuzzMecanum extends LinearOpMode {
             telemetry.addLine("OPERATOR TELEMETRY");
             telemetry.addData("shooter velocity: ", shooter.getVelocity());
             telemetry.addData("intake power", intake.getPower());
-
 
             telemetry.update();
         }

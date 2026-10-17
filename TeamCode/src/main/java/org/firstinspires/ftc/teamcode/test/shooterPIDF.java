@@ -7,12 +7,12 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-@TeleOp (name = "shooter")
+@TeleOp (name = "shooterPIDF")
 public class shooterPIDF extends LinearOpMode {
     public void runOpMode() {
         DcMotorEx ShooterR = hardwareMap.get(DcMotorEx.class, "shooterR");
 
-        ShooterR.setDirection(DcMotorSimple.Direction.FORWARD);
+        ShooterR.setDirection(DcMotorSimple.Direction.REVERSE);
 
         ShooterR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 

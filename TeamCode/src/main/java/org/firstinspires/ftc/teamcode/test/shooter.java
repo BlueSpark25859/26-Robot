@@ -11,7 +11,7 @@ public class shooter extends LinearOpMode {
     public void runOpMode() {
         DcMotorEx ShooterR = hardwareMap.get(DcMotorEx.class, "shooterR");
 
-        ShooterR.setDirection(DcMotorSimple.Direction.FORWARD);
+        ShooterR.setDirection(DcMotorSimple.Direction.REVERSE);
 
         ShooterR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -20,6 +20,7 @@ public class shooter extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()) {
+
             if (gamepad1.right_bumper) {
                 velocityS = 1400;
             } else {
