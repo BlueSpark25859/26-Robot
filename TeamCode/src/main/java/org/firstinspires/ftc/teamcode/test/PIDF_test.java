@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-@TeleOp
+@TeleOp (name = "PIDF tuning")
 public class PIDF_test extends LinearOpMode {
 
     public DcMotorEx ShooterR;
