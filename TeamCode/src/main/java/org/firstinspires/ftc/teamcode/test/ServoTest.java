@@ -24,9 +24,11 @@ public class ServoTest extends LinearOpMode {
             //servoTwo.setPower(0.5); //send power to the continous servo
 
             //Controlling servo with gamepad
+
             if(gamepad1.circle){
                 servoOne.setPosition(1);
-            }else if(gamepad1.triangle){
+            }
+            else if(gamepad1.triangle){
                 servoOne.setPosition(0);
             }
 
