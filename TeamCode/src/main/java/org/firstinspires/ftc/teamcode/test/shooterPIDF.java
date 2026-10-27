@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
-@TeleOp (name = "shooter")
+@TeleOp (name = "shooter with PIDF")
 public class shooterPIDF extends LinearOpMode {
     public void runOpMode() {
         DcMotorEx ShooterR = hardwareMap.get(DcMotorEx.class, "shooterR");
