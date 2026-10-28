@@ -95,6 +95,8 @@ public class Autoshooter extends LinearOpMode {
             esperarAuto(0.3);
             shooter(1500);
             esperarAuto(0.3);
+            shooter(0);
+            esperarAuto(0.3);
             izquierda(0.8, 140);
             esperarAuto(1);
             retrocederRecto (0.8,50);
@@ -468,9 +470,9 @@ public class Autoshooter extends LinearOpMode {
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
         leftFront.setTargetPosition(-ticksObjetivo);
