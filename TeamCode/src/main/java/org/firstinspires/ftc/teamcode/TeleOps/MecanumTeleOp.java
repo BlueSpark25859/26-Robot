@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.TeleOps;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -19,7 +20,7 @@ public class MecanumTeleOp extends LinearOpMode {
     private double target = 0;
     boolean isCorrecting = true;
 
-    DcMotorEx odometry;
+    DcMotorEx odometryFront, odometrySide;
 
     private static final double TICKS_PER_REV = 2000.0;
     private static final double WHEEL_DIAMETER_MM = 32.0;
@@ -60,9 +61,11 @@ public class MecanumTeleOp extends LinearOpMode {
 
         shooter = hardwareMap.get(DcMotorEx.class, "shooter");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
-        odometry = hardwareMap.get(DcMotorEx.class, "intake");
+        odometryFront = hardwareMap.get(DcMotorEx.class, "intake");
+        odometrySide = hardwareMap.get(DcMotorEx.class, "podSide");
 
-        shooter.setDirection(DcMotorEx.Direction.REVERSE);
+
+        shooter.setDirection(DcMotorEx.Direction.FORWARD);
         shooter.setVelocityPIDFCoefficients(6, 0, 0, 12.6);
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         intake.setDirection(DcMotorEx.Direction.REVERSE);
@@ -75,7 +78,8 @@ public class MecanumTeleOp extends LinearOpMode {
         );
         IMU.initialize(new IMU.Parameters(RevOrientation));
 
-        int initialTicks = odometry.getCurrentPosition();
+        int initialFrontTicks = odometryFront.getCurrentPosition();
+        int initialSideTicks = odometrySide.getCurrentPosition();
 
         waitForStart();
 
@@ -95,9 +99,11 @@ public class MecanumTeleOp extends LinearOpMode {
             totalAngle += deltaAngle;
             lastAngle = orientation;
 
-            int ticks = odometry.getCurrentPosition() - initialTicks;
+            int ticksFront = odometryFront.getCurrentPosition() - initialFrontTicks;
+            int ticksSide = odometrySide.getCurrentPosition() - initialSideTicks;
 
-            double distanceMM = (ticks / TICKS_PER_REV) * Math.PI * WHEEL_DIAMETER_MM;
+            double distanceMMFront = (ticksFront / TICKS_PER_REV) * Math.PI * WHEEL_DIAMETER_MM;
+            double distanceMMSide = (ticksSide / TICKS_PER_REV) * Math.PI * WHEEL_DIAMETER_MM;
 
             //DRIVER CODE ==================================================================================================================
 
@@ -196,9 +202,12 @@ public class MecanumTeleOp extends LinearOpMode {
 
             telemetry.addLine("Odometry");
             telemetry.addData("Total Angle", totalAngle);
-            telemetry.addData("Encoder ticks", ticks);
-            telemetry.addData("Distance (mm)", distanceMM);
-            telemetry.addData("Distance (cm)", distanceMM / 10.0);
+            telemetry.addData("Encoder Front ticks", ticksFront);
+            telemetry.addData("Encoder Side ticks", ticksSide);
+            telemetry.addData("Distance Front (mm)", distanceMMFront);
+            telemetry.addLine();
+            telemetry.addData("Distance Front (cm)", distanceMMFront / 10.0);
+            telemetry.addData("Distance Side (cm)", distanceMMSide / 10.0);
 
             telemetry.update();
         }
