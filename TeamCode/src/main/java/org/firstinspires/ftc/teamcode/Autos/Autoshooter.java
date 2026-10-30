@@ -49,7 +49,7 @@ public class Autoshooter extends LinearOpMode {
         shooter = hardwareMap.get(DcMotorEx.class, "shooter");
         intake = hardwareMap.get(DcMotor.class, "intake");
 
-        shooter.setDirection(DcMotorSimple.Direction.FORWARD);
+        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
 
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
@@ -94,8 +94,6 @@ public class Autoshooter extends LinearOpMode {
             giroAngulo(0);
             esperarAuto(0.3);
             shooter(1500);
-            esperarAuto(0.3);
-            shooter(0);
             esperarAuto(0.3);
             izquierda(0.8, 140);
             esperarAuto(1);
@@ -392,129 +390,29 @@ public class Autoshooter extends LinearOpMode {
         leftBack.setPower(-poder);
         rightBack.setPower(-poder);
     }
-
-    // Derecha en centímetros con encoders
-    public void derecha(double poder, double distanciaCM){
-        double targetAngle = obtenerAngulo();
-        double kp = 0.015;
-        double factorStrafe = 1.15; // calibrar
-        double ticksPorVuelta = 280;
-        double diametroRuedaCM = 9.2;
-        double ticksPorCM = ticksPorVuelta / (Math.PI * diametroRuedaCM);
-        int ticksObjetivo = (int) (distanciaCM * ticksPorCM * factorStrafe);
-
-        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+    public void derecha(double poder, int i){
 
         leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
         leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        leftFront.setTargetPosition(ticksObjetivo);
-        rightFront.setTargetPosition(-ticksObjetivo);
-        leftBack.setTargetPosition(-ticksObjetivo);
-        rightBack.setTargetPosition(ticksObjetivo);
-
-        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        // En RUN_TO_POSITION la potencia siempre va positiva
-        leftFront.setPower(Math.abs(poder));
-        rightFront.setPower(Math.abs(poder));
-        leftBack.setPower(Math.abs(poder));
-        rightBack.setPower(Math.abs(poder));
-
-        while (opModeIsActive() &&
-                (leftFront.isBusy() ||  rightFront.isBusy() ||
-                        leftBack.isBusy()  ||  rightBack.isBusy())) {
-
-            double error = obtenerError(targetAngle);
-            double correction = error * kp;
-            correction = Math.max(Math.min(correction, 0.3), -0.3);
-
-            leftFront.setPower(Range.clip(Math.abs(poder) + correction, 0, 1));
-            rightFront.setPower(Range.clip(Math.abs(poder) + correction, 0, 1));
-            leftBack.setPower(Range.clip(Math.abs(poder) - correction, 0, 1));
-            rightBack.setPower(Range.clip(Math.abs(poder) - correction, 0, 1));
-
-            telemetry.addData("Error", error);
-            telemetry.addData("Corrección", correction);
-            telemetry.addData("Heading: ", obtenerAngulo());
-            telemetry.update();
-        }
-
-        poderMotor(0);
-        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftFront.setPower(poder);
+        rightFront.setPower(-(poder));
+        leftBack.setPower(-(poder));
+        rightBack.setPower(poder);
     }
+    public void izquierda(double poder, int i){
 
-    // Izquierda en centímetros con encoders
-    public void izquierda(double poder, double distanciaCM){
-        double targetAngle = obtenerAngulo();
-        double kp = 0.015;
-        double factorStrafe = 1.15; // calibrar
-        double ticksPorVuelta = 280;
-        double diametroRuedaCM = 9.2;
-        double ticksPorCM = ticksPorVuelta / (Math.PI * diametroRuedaCM);
-        int ticksObjetivo = (int) (distanciaCM * ticksPorCM * factorStrafe);
-
-        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
         leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        leftFront.setTargetPosition(-ticksObjetivo);
-        rightFront.setTargetPosition(ticksObjetivo);
-        leftBack.setTargetPosition(ticksObjetivo);
-        rightBack.setTargetPosition(-ticksObjetivo);
-
-        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-        // En RUN_TO_POSITION la potencia siempre va positiva
-        leftFront.setPower(Math.abs(poder));
-        rightFront.setPower(Math.abs(poder));
-        leftBack.setPower(Math.abs(poder));
-        rightBack.setPower(Math.abs(poder));
-
-        while (opModeIsActive() &&
-                (leftFront.isBusy() ||  rightFront.isBusy() ||
-                        leftBack.isBusy()  ||  rightBack.isBusy())) {
-
-            double error = obtenerError(targetAngle);
-            double correction = error * kp;
-            correction = Math.max(Math.min(correction, 0.3), -0.3);
-
-            leftFront.setPower(Range.clip(Math.abs(poder) - correction, 0, 1));
-            rightFront.setPower(Range.clip(Math.abs(poder) - correction, 0, 1));
-            leftBack.setPower(Range.clip(Math.abs(poder) + correction, 0, 1));
-            rightBack.setPower(Range.clip(Math.abs(poder) + correction, 0, 1));
-
-            telemetry.addData("Error", error);
-            telemetry.addData("Corrección", correction);
-            telemetry.addData("Heading: ", obtenerAngulo());
-            telemetry.update();
-        }
-
-        poderMotor(0);
-        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftFront.setPower(-(poder));
+        rightFront.setPower(poder);
+        leftBack.setPower(poder);
+        rightBack.setPower(-(poder));
     }
 
     public void poderMotor(double poder) {
