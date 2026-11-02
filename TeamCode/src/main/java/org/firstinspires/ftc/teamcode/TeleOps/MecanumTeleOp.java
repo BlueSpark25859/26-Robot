@@ -66,7 +66,7 @@ public class MecanumTeleOp extends LinearOpMode {
 
 
         shooter.setDirection(DcMotorEx.Direction.FORWARD);
-        shooter.setVelocityPIDFCoefficients(6, 0, 0, 12.6);
+        shooter.setVelocityPIDFCoefficients(21, 0, 0, 12.6);
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
         intake.setDirection(DcMotorEx.Direction.REVERSE);
 
@@ -155,7 +155,7 @@ public class MecanumTeleOp extends LinearOpMode {
 
             //OPERATOR CODE=================================================================================================================
 
-            int shooterSpeed = 1600;
+            int shooterSpeed = 1550;
             boolean isOpen = shooter.getVelocity() >= shooterSpeed - 250;
 
             if (gamepad2.a || isOpen) {

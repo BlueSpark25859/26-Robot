@@ -11,11 +11,9 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.internal.system.Deadline;
 
 import java.util.concurrent.TimeUnit;
+@TeleOp (name = "PurpleSparkBioBuzz")
 
-public class BioBuzzLineal {
-    @TeleOp (name = "PurpleSparkBioBuzz")
-
-    public class PurpleSparkBioBuzz extends LinearOpMode {
+    public class BioBuzzLineal extends LinearOpMode {
         private ElapsedTime runtime= new ElapsedTime();
 
         public void runOpMode(){
@@ -80,6 +78,3 @@ public class BioBuzzLineal {
             }
         }
     }
-
-
-}
