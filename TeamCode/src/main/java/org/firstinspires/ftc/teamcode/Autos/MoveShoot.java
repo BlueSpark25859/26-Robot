@@ -88,14 +88,16 @@ public class MoveShoot extends LinearOpMode {
             IMU.resetYaw();
 
 
-            avanzarRecto(0.8, 50);
+            avanzarRecto(0.4, 50);
             esperarAuto(1);
-            giroAngulo(0);
+            //giroAngulo(0);
             esperarAuto(0.3);
-            izquierdaDistance(0.8,90);
+            //izquierdaDistance(0.3,40);
             esperarAuto(0.4);
-            giroAngulo(0);
-            esperarAuto(0);
+            //giroAngulo(0);
+            esperarAuto(0.3);
+            retrocederRecto(0.2,150);
+            esperarAuto(0.3);
 
 
 
@@ -265,10 +267,10 @@ public class MoveShoot extends LinearOpMode {
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
         leftFront.setTargetPosition(ticksObjetivo);
@@ -281,10 +283,10 @@ public class MoveShoot extends LinearOpMode {
         rightFront.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         rightBack.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
-        leftFront.setPower(-(poder));
-        leftBack.setPower(-(poder));
-        rightFront.setPower(-(poder));
-        rightBack.setPower(-(poder));
+        leftFront.setPower(poder);
+        leftBack.setPower(poder);
+        rightFront.setPower(poder);
+        rightBack.setPower(poder);
 
         leftFront.getCurrentPosition();
         leftFront.getDirection();
