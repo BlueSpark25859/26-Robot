@@ -265,10 +265,10 @@ public class MoveShoot extends LinearOpMode {
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
 
 
         leftFront.setTargetPosition(ticksObjetivo);
@@ -281,10 +281,10 @@ public class MoveShoot extends LinearOpMode {
         rightFront.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         rightBack.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
-        leftFront.setPower(-(poder));
-        leftBack.setPower(-(poder));
-        rightFront.setPower(-(poder));
-        rightBack.setPower(-(poder));
+        leftFront.setPower(poder);
+        leftBack.setPower(poder);
+        rightFront.setPower(poder);
+        rightBack.setPower(poder);
 
         leftFront.getCurrentPosition();
         leftFront.getDirection();
@@ -378,6 +378,80 @@ public class MoveShoot extends LinearOpMode {
             leftBack.setPower(poder + correction);
             rightFront.setPower(poder + correction);
             rightBack.setPower(poder - correction);
+
+            telemetry.addData("Angulo", leftFront.getCurrentPosition());
+            telemetry.addData("DireccionMotorIzquierdo", leftFront.getDirection());
+            telemetry.addData("DireccionMotorDerecho", rightFront.getDirection());
+            telemetry.addData("Error", error);
+            telemetry.addData("Corrección", correction);
+            telemetry.addData("Heading: ", obtenerAngulo());
+            telemetry.addData("L", leftFront.getCurrentPosition());
+            telemetry.addData("R", rightFront.getCurrentPosition());
+            telemetry.update();
+        }
+
+
+        leftFront.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
+    }
+
+
+    public void derechaDistance(double poder, double distancia){
+        double targetAngle = obtenerAngulo();
+        double kp = 0.015;
+        // Calcular ticks necesarios (ajusta según tus motores y ruedas)
+        double ticksPorVuelta = 280;
+        double diametroRuedaCM = 9.2;
+        double ticksPorCM = ticksPorVuelta / (Math.PI * diametroRuedaCM); //28.88
+        int ticksObjetivo = (int) (distancia * ticksPorCM);
+
+        // Resetear encoders y configurar modo
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        leftFront.setTargetPosition(-ticksObjetivo);
+        leftBack.setTargetPosition(ticksObjetivo);
+        rightFront.setTargetPosition(ticksObjetivo);
+        rightBack.setTargetPosition(-ticksObjetivo);
+
+        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        leftFront.setPower(poder);
+        leftBack.setPower(poder);
+        rightFront.setPower(poder);
+        rightBack.setPower(poder);
+
+        leftFront.getCurrentPosition();
+        leftFront.getDirection();
+        rightFront.getDirection();
+
+        while (opModeIsActive() &&
+                (leftFront.isBusy() ||  rightFront.isBusy() ||
+                        leftBack.isBusy()  ||  rightBack.isBusy())) {
+
+            double error = obtenerError(targetAngle);
+            double correction = error * kp;
+
+            // Limitar la corrección para evitar sobresaturación
+            correction = Math.max(Math.min(correction, 0.3), -0.3);
+
+            // Aplicar corrección (izquierda o derecha)
+            leftFront.setPower(poder + correction);
+            leftBack.setPower(poder - correction);
+            rightFront.setPower(poder - correction);
+            rightBack.setPower(poder + correction);
 
             telemetry.addData("Angulo", leftFront.getCurrentPosition());
             telemetry.addData("DireccionMotorIzquierdo", leftFront.getDirection());
