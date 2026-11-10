@@ -158,11 +158,15 @@ public class MecanumTeleOp extends LinearOpMode {
             int shooterSpeed = 1550;
             boolean isOpen = shooter.getVelocity() >= shooterSpeed - 250;
 
-            if (gamepad2.a || isOpen) {
+            if (gamepad2.a) {
                 intake.setPower(0.85);
 
             } else {
                 intake.setPower(0);
+            }
+
+            if (isOpen){
+                intake.setPower(0.5);
             }
 
 
