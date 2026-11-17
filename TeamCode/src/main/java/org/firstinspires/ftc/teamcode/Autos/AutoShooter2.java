@@ -505,5 +505,4 @@ public class AutoShooter2 extends LinearOpMode {
         leftBack.setPower(poder);
         rightFront.setPower(poder);
         rightBack.setPower(poder);
-    }
-}
+    }}

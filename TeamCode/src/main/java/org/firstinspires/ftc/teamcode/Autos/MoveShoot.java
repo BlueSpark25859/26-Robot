@@ -90,11 +90,11 @@ public class MoveShoot extends LinearOpMode {
 
             avanzarRecto(0.4, 50);
             esperarAuto(1);
-            //giroAngulo(0);
+            giroAngulo(0);
             esperarAuto(0.3);
-            //izquierdaDistance(0.3,40);
+            izquierda (0.3);
             esperarAuto(0.4);
-            //giroAngulo(0);
+            giroAngulo(0);
             esperarAuto(0.3);
             retrocederRecto(0.2,150);
             esperarAuto(0.3);
@@ -464,10 +464,10 @@ public class MoveShoot extends LinearOpMode {
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        leftFront.setPower(-(poder));
-        rightFront.setPower(poder);
-        leftBack.setPower(poder);
-        rightBack.setPower(-(poder));
+        leftFront.setPower(poder);
+        rightFront.setPower(-(poder));
+        leftBack.setPower(-(poder));
+        rightBack.setPower(poder);
     }
 
     public void poderMotor(double poder) {
