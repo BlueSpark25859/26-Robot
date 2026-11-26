@@ -20,7 +20,7 @@ public class ServoTest extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()){
-            servoOne.setPosition(0.5); //value from 0 to 1
+            //servoOne.setPosition(0.5); //value from 0 to 1
             //servoTwo.setPower(0.5); //send power to the continous servo
 
             //Controlling servo with gamepad
