@@ -6,13 +6,14 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.CRServo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Constants.Constants;
 
-@TeleOp(name = "UltimateBazookaTest")
+@TeleOp(name = "1MecanumTeleop")
 
 public class MecanumTeleOp extends LinearOpMode {
     public int servoCount = 0;
@@ -28,6 +29,10 @@ public class MecanumTeleOp extends LinearOpMode {
 
     DcMotorEx shooter, intake;
 
+    Servo servoOne;
+    //servoOne.setPosition(0.5);
+    //limit the servo movement to a certain range
+
     public void runOpMode() throws InterruptedException {
 
         telemetry.addData("Status", "Started");
@@ -39,8 +44,8 @@ public class MecanumTeleOp extends LinearOpMode {
         DcMotorEx rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
         DcMotorEx rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
 
-        CRServo servoOne;
-        servoOne = hardwareMap.get(CRServo.class, "servo_one");
+        Servo servoOne; //Change to normal servo
+        servoOne = hardwareMap.get(Servo.class, "servo_one");
         servoOne.getController().pwmEnable();
 
 
@@ -82,9 +87,23 @@ public class MecanumTeleOp extends LinearOpMode {
         int initialFrontTicks = odometryFront.getCurrentPosition();
         int initialSideTicks = odometrySide.getCurrentPosition();
 
+        //Set max und min scale for servo
+
         waitForStart();
 
         while (opModeIsActive()) {
+
+            if(gamepad1.circle){
+                servoOne.setPosition(1);
+            }
+            else if(gamepad1.triangle){
+                servoOne.setPosition(0);
+            }
+
+            //Telemetry to see the position of our servo
+            telemetry.addData("Servo Position: ",servoOne.getPosition());
+            telemetry.update();
+        }
 
             //IMU ==========================================================================================================================
 
@@ -177,18 +196,11 @@ public class MecanumTeleOp extends LinearOpMode {
                 shooter.setVelocity(0);
             }
 
+            //Comment this
 
-            if (servoCount <= 20 && isOpen) {
-                servoOne.setPower(-1);
-                servoCount++;
-            }
-            if (servoCount >= 1 && (!isOpen)) {
-                servoOne.setPower(1);
-                servoCount--;
-            }
-            if (servoCount < 1 || servoCount > 20) {
-                servoOne.setPower(0);
-            }
+            //Change logic to servo positions instead of using power per servoCount
+
+
 
             //Telemetry ====================================================================================================================
 
@@ -217,4 +229,3 @@ public class MecanumTeleOp extends LinearOpMode {
             telemetry.update();
         }
     }
-}
