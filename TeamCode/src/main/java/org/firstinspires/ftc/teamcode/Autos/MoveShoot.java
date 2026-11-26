@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Constants.Constants;
 
 @Autonomous(name = "Move Shoot")
 public class MoveShoot extends LinearOpMode {
@@ -49,8 +50,8 @@ public class MoveShoot extends LinearOpMode {
         shooter = hardwareMap.get(DcMotorEx.class, "shooter");
         intake = hardwareMap.get(DcMotor.class, "intake");
 
-        shooter.setDirection(DcMotorSimple.Direction.FORWARD);
-        intake.setDirection(DcMotor.Direction.REVERSE);
+        shooter.setDirection(Constants.Shooter.kShooterDirection);
+        intake.setDirection(Constants.Intake.kIntakeDirection);
 
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
@@ -88,14 +89,16 @@ public class MoveShoot extends LinearOpMode {
             IMU.resetYaw();
 
 
-            avanzarRecto(0.8, 50);
+            avanzarRecto(0.4, 50);
             esperarAuto(1);
             giroAngulo(0);
             esperarAuto(0.3);
-            izquierdaDistance(0.8,90);
+            izquierda (0.3);
             esperarAuto(0.4);
             giroAngulo(0);
-            esperarAuto(0);
+            esperarAuto(0.3);
+            retrocederRecto(0.2,150);
+            esperarAuto(0.3);
 
 
 
@@ -536,10 +539,10 @@ public class MoveShoot extends LinearOpMode {
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        leftFront.setPower(-(poder));
-        rightFront.setPower(poder);
-        leftBack.setPower(poder);
-        rightBack.setPower(-(poder));
+        leftFront.setPower(poder);
+        rightFront.setPower(-(poder));
+        leftBack.setPower(-(poder));
+        rightBack.setPower(poder);
     }
 
     public void poderMotor(double poder) {

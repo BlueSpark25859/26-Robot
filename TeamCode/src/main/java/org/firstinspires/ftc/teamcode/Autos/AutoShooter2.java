@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.TeleOps;
+package org.firstinspires.ftc.teamcode.Autos;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -10,9 +10,10 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Constants.Constants;
 
-@Autonomous(name = "Flower1")
-public class Flower extends LinearOpMode {
+@Autonomous(name = "Autoshooter2")
+public class AutoShooter2 extends LinearOpMode {
 
 
 
@@ -49,8 +50,8 @@ public class Flower extends LinearOpMode {
         shooter = hardwareMap.get(DcMotorEx.class, "shooter");
         intake = hardwareMap.get(DcMotor.class, "intake");
 
-        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
-        intake.setDirection(DcMotor.Direction.REVERSE);
+        shooter.setDirection(Constants.Shooter.kShooterDirection);
+        intake.setDirection(Constants.Intake.kIntakeDirection);
 
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
@@ -89,32 +90,8 @@ public class Flower extends LinearOpMode {
             IMU.resetYaw();
 
 
-            avanzarRecto(0.8,50);
-            esperarAuto(1);
-            giroAngulo(0);
-            esperarAuto(0.3);
-            shooter(1500);
-            esperarAuto(0.3);
             izquierda(0.8, 140);
-            esperarAuto(1);
-            retrocederRecto (0.8,50);
-            esperarAuto(0.3);
-            intake(1500);
-            esperarAuto(0.3);
-            derecha(0.8, 15);
-            esperarAuto(1);
-            retrocederRecto (0.8,20);
-            esperarAuto(0.3);
-            intake(1500);
-            esperarAuto(0.3);
-            retrocederRecto (0.8,50);
-            esperarAuto(0.3);
-            intake(1500);
-            esperarAuto(1);
-            derecha(0.8, 125);
-            esperarAuto(1);
-            shooter(1500);
-            esperarAuto(0.3);
+            sleep(2000);
 
 
             break; //se acaba
@@ -195,14 +172,14 @@ public class Flower extends LinearOpMode {
         return error;
     }
 
-    //Función para avanzar recto
+    //Función para avanzar recto (SIN CAMBIOS)
     public void avanzarRecto(double poder, double distanciaCM) {
         double targetAngle = obtenerAngulo();
         double kp = 0.015;
         // Calcular ticks necesarios (ajusta según tus motores y ruedas)
         double ticksPorVuelta = 280;
         double diametroRuedaCM = 9.2;
-        double ticksPorCM = ticksPorVuelta / (Math.PI * diametroRuedaCM); //28.88
+        double ticksPorCM = ticksPorVuelta / (Math.PI * diametroRuedaCM);
         int ticksObjetivo = (int) (distanciaCM * ticksPorCM);
 
         // Resetear encoders y configurar modo
@@ -270,13 +247,16 @@ public class Flower extends LinearOpMode {
         rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    // Retroceder en centímetros con encoders.
+    // Antes avanzaba: ahora las direcciones se invierten dentro del método
+    // y el target queda positivo (en la dirección "lógica" de cada motor).
     public void retrocederRecto(double poder, double distanciaCM) {
         double targetAngle = obtenerAngulo();
         double kp = 0.015;
         // Calcular ticks necesarios (ajusta según tus motores y ruedas)
         double ticksPorVuelta = 280;
         double diametroRuedaCM = 9.2;
-        double ticksPorCM = ticksPorVuelta / (Math.PI * diametroRuedaCM); //28.88
+        double ticksPorCM = ticksPorVuelta / (Math.PI * diametroRuedaCM);
         int ticksObjetivo = (int) (distanciaCM * ticksPorCM);
 
         // Resetear encoders y configurar modo
@@ -285,11 +265,11 @@ public class Flower extends LinearOpMode {
         rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
-
+        // Todas las ruedas al revés de las de avanzar
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
 
         leftFront.setTargetPosition(ticksObjetivo);
         leftBack.setTargetPosition(ticksObjetivo);
@@ -301,10 +281,11 @@ public class Flower extends LinearOpMode {
         rightFront.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
         rightBack.setMode(DcMotorEx.RunMode.RUN_TO_POSITION);
 
-        leftFront.setPower(-(poder));
-        leftBack.setPower(-(poder));
-        rightFront.setPower(-(poder));
-        rightBack.setPower(-(poder));
+        // En RUN_TO_POSITION la potencia siempre va positiva
+        leftFront.setPower(Math.abs(poder));
+        leftBack.setPower(Math.abs(poder));
+        rightFront.setPower(Math.abs(poder));
+        rightBack.setPower(Math.abs(poder));
 
         leftFront.getCurrentPosition();
         leftFront.getDirection();
@@ -320,11 +301,11 @@ public class Flower extends LinearOpMode {
             // Limitar la corrección para evitar sobresaturación
             correction = Math.max(Math.min(correction, 0.3), -0.3);
 
-            // Aplicar corrección (izquierda o derecha)
-            leftFront.setPower(poder + correction);
-            leftBack.setPower(poder + correction);
-            rightFront.setPower(poder - correction);
-            rightBack.setPower(poder - correction);
+            // Al ir en reversa la corrección va al revés que en avanzarRecto
+            leftFront.setPower(Range.clip(Math.abs(poder) - correction, 0, 1));
+            leftBack.setPower(Range.clip(Math.abs(poder) - correction, 0, 1));
+            rightFront.setPower(Range.clip(Math.abs(poder) + correction, 0, 1));
+            rightBack.setPower(Range.clip(Math.abs(poder) + correction, 0, 1));
 
             telemetry.addData("Angulo", leftFront.getCurrentPosition());
             telemetry.addData("DireccionMotorIzquierdo", leftFront.getDirection());
@@ -390,35 +371,139 @@ public class Flower extends LinearOpMode {
         leftBack.setPower(-poder);
         rightBack.setPower(-poder);
     }
-    public void derecha(double poder, int i){
+
+    // Derecha en centímetros con encoders (strafe mecanum).
+    // Físicamente: LF adelante, RF atrás, LB atrás, RB adelante.
+    // Con las direcciones base (LF/LB FORWARD, RF/RB REVERSE = adelante),
+    // las ruedas que deben ir atrás (RF y LB) se invierten, y así todos
+    // los targets quedan positivos.
+    public void derecha(double poder, double distanciaCM){
+        double targetAngle = obtenerAngulo();
+        double kp = 0.015;
+        double factorStrafe = 1.15; // calibrar
+        double ticksPorVuelta = 280;
+        double diametroRuedaCM = 9.2;
+        double ticksPorCM = ticksPorVuelta / (Math.PI * diametroRuedaCM);
+        int ticksObjetivo = (int) (distanciaCM * ticksPorCM * factorStrafe);
+
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightBack.setDirection(DcMotorSimple.Direction.FORWARD);
+
+        leftFront.setTargetPosition(ticksObjetivo);
+        rightFront.setTargetPosition(ticksObjetivo);
+        leftBack.setTargetPosition(ticksObjetivo);
+        rightBack.setTargetPosition(ticksObjetivo);
+
+        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // En RUN_TO_POSITION la potencia siempre va positiva
+        leftFront.setPower(Math.abs(poder));
+        rightFront.setPower(Math.abs(poder));
+        leftBack.setPower(Math.abs(poder));
+        rightBack.setPower(Math.abs(poder));
+
+        while (opModeIsActive() &&
+                (leftFront.isBusy() ||  rightFront.isBusy() ||
+                        leftBack.isBusy()  ||  rightBack.isBusy())) {
+
+            double error = obtenerError(targetAngle);
+            double correction = error * kp;
+            correction = Math.max(Math.min(correction, 0.3), -0.3);
+
+            leftFront.setPower(Range.clip(Math.abs(poder) + correction, 0, 1));
+            rightFront.setPower(Range.clip(Math.abs(poder) + correction, 0, 1));
+            leftBack.setPower(Range.clip(Math.abs(poder) - correction, 0, 1));
+            rightBack.setPower(Range.clip(Math.abs(poder) - correction, 0, 1));
+
+            telemetry.addData("Error", error);
+            telemetry.addData("Corrección", correction);
+            telemetry.addData("Heading: ", obtenerAngulo());
+            telemetry.update();
+        }
+
+        poderMotor(0);
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    // Izquierda en centímetros con encoders (strafe mecanum).
+    // Físicamente: LF atrás, RF adelante, LB adelante, RB atrás.
+    public void izquierda(double poder, double distanciaCM){
+        double targetAngle = obtenerAngulo();
+        double kp = 0.015;
+        double factorStrafe = 2; // calibrar
+        double ticksPorVuelta = 280;
+        double diametroRuedaCM = 9.2;
+        double ticksPorCM = ticksPorVuelta / (Math.PI * diametroRuedaCM);
+        int ticksObjetivo = (int) (distanciaCM * ticksPorCM * factorStrafe);
+
+        leftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
+        leftFront.setTargetPosition(ticksObjetivo);
+        rightFront.setTargetPosition(ticksObjetivo);
+        leftBack.setTargetPosition(ticksObjetivo);
+        rightBack.setTargetPosition(ticksObjetivo);
+
+        leftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        leftBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        rightBack.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        // En RUN_TO_POSITION la potencia siempre va positiva
+        leftFront.setPower(Math.abs(poder));
+        rightFront.setPower(Math.abs(poder));
+        leftBack.setPower(Math.abs(poder));
+        rightBack.setPower(Math.abs(poder));
+
+        while (opModeIsActive() &&
+                (leftFront.isBusy() ||  rightFront.isBusy() ||
+                        leftBack.isBusy()  ||  rightBack.isBusy())) {
+
+            double error = obtenerError(targetAngle);
+            double correction = error * kp;
+            correction = Math.max(Math.min(correction, 0.3), -0.3);
+
+            leftFront.setPower(Range.clip(Math.abs(poder) - correction, 0, 1));
+            rightFront.setPower(Range.clip(Math.abs(poder) + correction, 0, 1));
+            leftBack.setPower(Range.clip(Math.abs(poder) + correction, 0, 1));
+            rightBack.setPower(Range.clip(Math.abs(poder) - correction, 0, 1));
+
+            telemetry.addData("Error", error);
+            telemetry.addData("Corrección", correction);
+            telemetry.addData("Heading: ", obtenerAngulo());
+            telemetry.update();
+        }
+
+        poderMotor(0);
+        leftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        rightBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void poderMotor(double poder) {
         leftFront.setPower(poder);
-        rightFront.setPower(-(poder));
-        leftBack.setPower(-(poder));
-        rightBack.setPower(poder);
-    }
-    public void izquierda(double poder, int i){
-
-        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftBack.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        leftFront.setPower(-(poder));
-        rightFront.setPower(poder);
-        leftBack.setPower(poder);
-        rightBack.setPower(-(poder));
-    }
-
-    public void poderMotor (double poder) {
-        leftFront.setPower(poder);
         leftBack.setPower(poder);
         rightFront.setPower(poder);
         rightBack.setPower(poder);
-    }
-}
+    }}

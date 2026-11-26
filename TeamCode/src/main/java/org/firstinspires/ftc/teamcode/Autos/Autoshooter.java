@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Constants.Constants;
 
 @Autonomous(name = "Autoshooter")
 public class Autoshooter extends LinearOpMode {
@@ -49,8 +50,8 @@ public class Autoshooter extends LinearOpMode {
         shooter = hardwareMap.get(DcMotorEx.class, "shooter");
         intake = hardwareMap.get(DcMotor.class, "intake");
 
-        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
-        intake.setDirection(DcMotor.Direction.REVERSE);
+        shooter.setDirection(Constants.Shooter.kShooterDirection);
+        intake.setDirection(Constants.Intake.kIntakeDirection);
 
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
@@ -99,17 +100,17 @@ public class Autoshooter extends LinearOpMode {
             esperarAuto(1);
             retrocederRecto (0.8,50);
             esperarAuto(0.3);
-            intake(1500);
+            intake(0.8);
             esperarAuto(0.3);
             derecha(0.8, 15);
             esperarAuto(1);
             retrocederRecto (0.8,20);
             esperarAuto(0.3);
-            intake(1500);
+            intake(0.8);
             esperarAuto(0.3);
             retrocederRecto (0.8,50);
             esperarAuto(0.3);
-            intake(1500);
+            intake(0.8);
             esperarAuto(1);
             derecha(0.8, 125);
             esperarAuto(1);

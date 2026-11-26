@@ -6,12 +6,14 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.CRServo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Constants.Constants;
 
-@TeleOp(name = "UltimateBazookaTest")
+@TeleOp(name = "1MecanumTeleop")
 
 public class MecanumTeleOp extends LinearOpMode {
     public int servoCount = 0;
@@ -27,6 +29,10 @@ public class MecanumTeleOp extends LinearOpMode {
 
     DcMotorEx shooter, intake;
 
+    Servo servoOne;
+    //servoOne.setPosition(0.5);
+    //limit the servo movement to a certain range
+
     public void runOpMode() throws InterruptedException {
 
         telemetry.addData("Status", "Started");
@@ -38,8 +44,8 @@ public class MecanumTeleOp extends LinearOpMode {
         DcMotorEx rightFront = hardwareMap.get(DcMotorEx.class, "rightFront");
         DcMotorEx rightBack = hardwareMap.get(DcMotorEx.class, "rightBack");
 
-        CRServo servoOne;
-        servoOne = hardwareMap.get(CRServo.class, "servo_one");
+        Servo servoOne; //Change to normal servo
+        servoOne = hardwareMap.get(Servo.class, "servo_one");
         servoOne.getController().pwmEnable();
 
 
@@ -65,10 +71,10 @@ public class MecanumTeleOp extends LinearOpMode {
         odometrySide = hardwareMap.get(DcMotorEx.class, "podSide");
 
 
-        shooter.setDirection(DcMotorEx.Direction.FORWARD);
+        shooter.setDirection(Constants.Shooter.kShooterDirection);
         shooter.setVelocityPIDFCoefficients(21, 0, 0, 12.6);
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        intake.setDirection(DcMotorEx.Direction.REVERSE);
+        intake.setDirection(Constants.Intake.kIntakeDirection);
 
 
         IMU IMU = hardwareMap.get(IMU.class, "imu");
@@ -80,6 +86,8 @@ public class MecanumTeleOp extends LinearOpMode {
 
         int initialFrontTicks = odometryFront.getCurrentPosition();
         int initialSideTicks = odometrySide.getCurrentPosition();
+
+        //Set max und min scale for servo
 
         waitForStart();
 
@@ -130,21 +138,21 @@ public class MecanumTeleOp extends LinearOpMode {
             double lBPower = backLeftInputVel + error;
             double rBPower = backRightInputVel - error;
 
-            if(gamepad1.b && isCorrecting){
+            if (gamepad1.b && isCorrecting) {
                 target = totalAngle;
                 isCorrecting = false;
             }
-            if(gamepad1.bWasReleased()){
+            if (gamepad1.bWasReleased()) {
                 target = totalAngle;
                 isCorrecting = true;
             }
 
-            if (gamepad1.b){
+            if (gamepad1.b) {
                 leftFront.setVelocity(lFPower);
                 leftBack.setVelocity(lBPower);
                 rightFront.setVelocity(rFPower);
                 rightBack.setVelocity(rBPower);
-            } else{
+            } else {
                 leftFront.setVelocity(frontLeftInputVel);
                 leftBack.setVelocity(backLeftInputVel);
                 rightFront.setVelocity(frontRightInputVel);
@@ -152,17 +160,26 @@ public class MecanumTeleOp extends LinearOpMode {
             }
 
 
-
             //OPERATOR CODE=================================================================================================================
 
-            int shooterSpeed = 1550;
+            int shooterSpeed = Constants.Shooter.kShooterSpeed;
             boolean isOpen = shooter.getVelocity() >= shooterSpeed - 250;
 
-            if (gamepad2.a || isOpen) {
-                intake.setPower(0.85);
+            if (gamepad2.a) {
+                intake.setPower(Constants.Intake.kIntakePower);
 
             } else {
                 intake.setPower(0);
+            }
+
+            if (isOpen) {
+                intake.setPower(Constants.Intake.kLowIntakePower);
+            }
+
+            if (gamepad1.circle) {
+                servoOne.setPosition(1);
+            } else if (gamepad1.triangle) {
+                servoOne.setPosition(0);
             }
 
 
@@ -172,18 +189,6 @@ public class MecanumTeleOp extends LinearOpMode {
                 shooter.setVelocity(0);
             }
 
-
-            if (servoCount <= 20 && isOpen) {
-                servoOne.setPower(-1);
-                servoCount++;
-            }
-            if (servoCount >= 1 && (!isOpen)) {
-                servoOne.setPower(1);
-                servoCount--;
-            }
-            if (servoCount < 1 || servoCount > 20) {
-                servoOne.setPower(0);
-            }
 
             //Telemetry ====================================================================================================================
 
@@ -198,7 +203,8 @@ public class MecanumTeleOp extends LinearOpMode {
             telemetry.addLine("OPERATOR TELEMETRY");
             telemetry.addData("shooter velocity: ", shooter.getVelocity());
             telemetry.addData("intake power", intake.getPower());
-            telemetry.addData("Servo count", servoCount);
+            telemetry.addData("Servo Position: ", servoOne.getPosition());
+            telemetry.update();
 
             telemetry.addLine("Odometry");
             telemetry.addData("Total Angle", totalAngle);

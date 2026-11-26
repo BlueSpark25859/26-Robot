@@ -6,12 +6,14 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.teamcode.Constants.Constants;
+
 @TeleOp (name = "shooter")
 public class shooter extends LinearOpMode {
     public void runOpMode() {
         DcMotorEx ShooterR = hardwareMap.get(DcMotorEx.class, "shooterR");
 
-        ShooterR.setDirection(DcMotorSimple.Direction.REVERSE);
+        ShooterR.setDirection(Constants.Shooter.kShooterDirection);
 
         ShooterR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
@@ -22,7 +24,7 @@ public class shooter extends LinearOpMode {
         while (opModeIsActive()) {
 
             if (gamepad1.right_bumper) {
-                velocityS = 1400;
+                velocityS = Constants.Shooter.kShooterSpeed;
             } else {
                 velocityS = 0;
             }
@@ -31,7 +33,7 @@ public class shooter extends LinearOpMode {
                 velocityS = 1700;
             }
 
-            ShooterR.setVelocity(-velocityS);
+            ShooterR.setVelocity(velocityS);
 
             telemetry.addData("VelocidadShooter", ShooterR.getVelocity());
             telemetry.update();
