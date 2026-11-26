@@ -7,16 +7,18 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
+import org.firstinspires.ftc.teamcode.Constants.Constants;
+
 @TeleOp (name = "shooter with PIDF")
 public class shooterPIDF extends LinearOpMode {
     public void runOpMode() {
         DcMotorEx ShooterR = hardwareMap.get(DcMotorEx.class, "shooterR");
 
-        ShooterR.setDirection(DcMotorSimple.Direction.REVERSE);
+        ShooterR.setDirection(Constants.Shooter.kShooterDirection);
 
         ShooterR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        double velocityS = 1350;
+        double velocityS = Constants.Shooter.kShooterSpeed;
 
         waitForStart();
 

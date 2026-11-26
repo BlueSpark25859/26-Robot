@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.CRServo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.Constants.Constants;
 
 @TeleOp(name = "UltimateBazookaTest")
 
@@ -65,10 +66,10 @@ public class MecanumTeleOp extends LinearOpMode {
         odometrySide = hardwareMap.get(DcMotorEx.class, "podSide");
 
 
-        shooter.setDirection(DcMotorEx.Direction.REVERSE);
+        shooter.setDirection(Constants.Shooter.kShooterDirection);
         shooter.setVelocityPIDFCoefficients(21, 0, 0, 12.6);
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
-        intake.setDirection(DcMotorEx.Direction.REVERSE);
+        intake.setDirection(Constants.Intake.kIntakeDirection);
 
 
         IMU IMU = hardwareMap.get(IMU.class, "imu");
@@ -155,18 +156,18 @@ public class MecanumTeleOp extends LinearOpMode {
 
             //OPERATOR CODE=================================================================================================================
 
-            int shooterSpeed = 1350;
+            int shooterSpeed = Constants.Shooter.kShooterSpeed;
             boolean isOpen = shooter.getVelocity() >= shooterSpeed - 250;
 
             if (gamepad2.a) {
-                intake.setPower(0.85);
+                intake.setPower(Constants.Intake.kIntakePower);
 
             } else {
                 intake.setPower(0);
             }
 
             if (isOpen){
-                intake.setPower(0.5);
+                intake.setPower(Constants.Intake.kLowIntakePower);
             }
 
 

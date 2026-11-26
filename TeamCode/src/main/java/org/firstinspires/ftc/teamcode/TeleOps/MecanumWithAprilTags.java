@@ -10,6 +10,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.Constants.Constants;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection;
 import org.firstinspires.ftc.vision.apriltag.AprilTagSingleDetection;
@@ -79,8 +80,8 @@ public class MecanumWithAprilTags extends LinearOpMode {
         shooter = hardwareMap.get(DcMotorEx.class, "shooter");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
 
-        shooter.setDirection(DcMotorEx.Direction.REVERSE);
-        intake.setDirection(DcMotorEx.Direction.REVERSE);
+        shooter.setDirection(Constants.Shooter.kShooterDirection);
+        intake.setDirection(Constants.Intake.kIntakeDirection);
 
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);
 
@@ -225,7 +226,7 @@ public class MecanumWithAprilTags extends LinearOpMode {
 
                 if (gamepad2.a) {
 
-                    intake.setPower(0.8);
+                    intake.setPower(Constants.Intake.kIntakePower);
 
                 } else {
 
@@ -234,7 +235,7 @@ public class MecanumWithAprilTags extends LinearOpMode {
 
                 if (gamepad2.b) {
 
-                    shooter.setVelocity(1400);
+                    shooter.setVelocity(Constants.Shooter.kShooterSpeed);
 
                 } else {
 
