@@ -49,7 +49,7 @@ public class AutoShooter2 extends LinearOpMode {
         shooter = hardwareMap.get(DcMotorEx.class, "shooter");
         intake = hardwareMap.get(DcMotor.class, "intake");
 
-        shooter.setDirection(DcMotorSimple.Direction.FORWARD);
+        shooter.setDirection(DcMotorSimple.Direction.REVERSE);
         intake.setDirection(DcMotor.Direction.REVERSE);
 
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);

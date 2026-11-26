@@ -12,11 +12,11 @@ public class shooterPIDF extends LinearOpMode {
     public void runOpMode() {
         DcMotorEx ShooterR = hardwareMap.get(DcMotorEx.class, "shooterR");
 
-        ShooterR.setDirection(DcMotorSimple.Direction.FORWARD);
+        ShooterR.setDirection(DcMotorSimple.Direction.REVERSE);
 
         ShooterR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        double velocityS = 1600;
+        double velocityS = 1350;
 
         waitForStart();
 
@@ -31,11 +31,11 @@ public class shooterPIDF extends LinearOpMode {
             } else {
                 ShooterR.setVelocity(0);
             }
-
+            /*
             if (gamepad1.left_bumper) {
                 velocityS = 1700;
             }
-
+            */
 
 
             telemetry.addData("VelocidadShooter", ShooterR.getVelocity());

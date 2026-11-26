@@ -5,6 +5,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.util.Range;
 
@@ -78,7 +79,7 @@ public class MecanumWithAprilTags extends LinearOpMode {
         shooter = hardwareMap.get(DcMotorEx.class, "shooter");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
 
-        shooter.setDirection(DcMotorEx.Direction.FORWARD);
+        shooter.setDirection(DcMotorEx.Direction.REVERSE);
         intake.setDirection(DcMotorEx.Direction.REVERSE);
 
         shooter.setMode(DcMotorEx.RunMode.RUN_USING_ENCODER);

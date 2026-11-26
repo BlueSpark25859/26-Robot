@@ -30,7 +30,7 @@ public class PIDF_test extends LinearOpMode {
     public void runOpMode() {
         ShooterR = hardwareMap.get(DcMotorEx.class, "shooter");
 
-        ShooterR.setDirection(DcMotorSimple.Direction.FORWARD);
+        ShooterR.setDirection(DcMotorSimple.Direction.REVERSE);
         ShooterR.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
 //        double highVelocity = 1600;

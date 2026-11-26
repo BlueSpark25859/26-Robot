@@ -1,4 +1,4 @@
-/*package org.firstinspires.ftc.teamcode.pedro.auton;
+package org.firstinspires.ftc.teamcode.pedro.auton;
 
 
 import com.pedropathing.api.PoseFactory;
@@ -27,20 +27,32 @@ public class SimpleAuto extends OpMode {
     public void init() {
         Scheduler.reset();
         follower = Constants.create(hardwareMap);
-        follower.setPose(startPose);
+        follower.setPose(startPose); //Set robot start pose to where the robot is currently
     }
     @Override
     public void start() {
-        schedule(follow(follower, park()));
+        schedule(follow(follower, park())); //Call the path to follow
     }
     @Override
     public void loop() {
         follower.update();
+
+        // Execute Ivy commands
         Scheduler.execute();
+
+        // Display robot position
+        telemetry.addData("X", follower.pose().x());
+        telemetry.addData("Y", follower.pose().y());
+
+        telemetry.addData("Heading",Math.toDegrees(follower.pose().heading()));
+
+        telemetry.addData("Follower Mode", follower.mode());
+        telemetry.addData("Busy", follower.isBusy());
+
+        telemetry.update();
     }
 
     private Path park() {
-        return line(startPose, park).linear(startPose, park);
+        return line(startPose, park).constant(startPose); //Use constant for not moving the angle
     }
 }
-*/
