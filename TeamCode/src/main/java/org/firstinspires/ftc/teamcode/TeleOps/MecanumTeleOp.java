@@ -93,18 +93,6 @@ public class MecanumTeleOp extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-            if(gamepad1.circle){
-                servoOne.setPosition(1);
-            }
-            else if(gamepad1.triangle){
-                servoOne.setPosition(0);
-            }
-
-            //Telemetry to see the position of our servo
-            telemetry.addData("Servo Position: ",servoOne.getPosition());
-            telemetry.update();
-        }
-
             //IMU ==========================================================================================================================
 
             double orientation = IMU.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES);
@@ -150,27 +138,26 @@ public class MecanumTeleOp extends LinearOpMode {
             double lBPower = backLeftInputVel + error;
             double rBPower = backRightInputVel - error;
 
-            if(gamepad1.b && isCorrecting){
+            if (gamepad1.b && isCorrecting) {
                 target = totalAngle;
                 isCorrecting = false;
             }
-            if(gamepad1.bWasReleased()){
+            if (gamepad1.bWasReleased()) {
                 target = totalAngle;
                 isCorrecting = true;
             }
 
-            if (gamepad1.b){
+            if (gamepad1.b) {
                 leftFront.setVelocity(lFPower);
                 leftBack.setVelocity(lBPower);
                 rightFront.setVelocity(rFPower);
                 rightBack.setVelocity(rBPower);
-            } else{
+            } else {
                 leftFront.setVelocity(frontLeftInputVel);
                 leftBack.setVelocity(backLeftInputVel);
                 rightFront.setVelocity(frontRightInputVel);
                 rightBack.setVelocity(backRightInputVel);
             }
-
 
 
             //OPERATOR CODE=================================================================================================================
@@ -185,8 +172,14 @@ public class MecanumTeleOp extends LinearOpMode {
                 intake.setPower(0);
             }
 
-            if (isOpen){
+            if (isOpen) {
                 intake.setPower(Constants.Intake.kLowIntakePower);
+            }
+
+            if (gamepad1.circle) {
+                servoOne.setPosition(1);
+            } else if (gamepad1.triangle) {
+                servoOne.setPosition(0);
             }
 
 
@@ -195,11 +188,6 @@ public class MecanumTeleOp extends LinearOpMode {
             } else {
                 shooter.setVelocity(0);
             }
-
-            //Comment this
-
-            //Change logic to servo positions instead of using power per servoCount
-
 
 
             //Telemetry ====================================================================================================================
@@ -215,7 +203,8 @@ public class MecanumTeleOp extends LinearOpMode {
             telemetry.addLine("OPERATOR TELEMETRY");
             telemetry.addData("shooter velocity: ", shooter.getVelocity());
             telemetry.addData("intake power", intake.getPower());
-            telemetry.addData("Servo count", servoCount);
+            telemetry.addData("Servo Position: ", servoOne.getPosition());
+            telemetry.update();
 
             telemetry.addLine("Odometry");
             telemetry.addData("Total Angle", totalAngle);
@@ -229,3 +218,4 @@ public class MecanumTeleOp extends LinearOpMode {
             telemetry.update();
         }
     }
+}
